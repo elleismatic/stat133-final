@@ -1,14 +1,33 @@
 # Statistics 133 Final Project
 
-<img src="logos/iacs.png" alt="IACS Logo" height="100"/>
-<img src="logos/qri.png" alt="QRI Logo" height="100"/>
+<img src="http://www.hpcwire.com/wp-content/uploads/2011/02/financialmodeling.jpg" alt="Financial Modeling" height="400"/>
 
-This repository contains the source files required to reproduce the results in our Statistics 133 Final Project. This README will explain how to use these files.
+This project contains the source files required to reproduce the results in our Statistics 133 Final Project. This README will explain how to use these files.
 
 ## Data Sets
 
 - [Total Beta](http://people.stern.nyu.edu/adamodar/New_Home_Page/datafile/totalbeta.html/)
 - [PE Ratio](http://people.stern.nyu.edu/adamodar/New_Home_Page/datafile/pedata.html/)
+
+## Directories and Files
+
+This project contains the following folders:
+- `clean_data`:
+- `code`:
+- `images`:
+- `raw_data`:
+- `report`:
+- `resources`:
+
+This project contains the following files:
+- `README.md`: gives an overview of this project
+- `skeleton.R`: creates all directories in the project
+- `clean_data/`:
+- `code/`:
+- `images/`:
+- `raw_data/`:
+- `report/`:
+- `resources/`:
 
 ## Usage
 
@@ -53,23 +72,12 @@ which denotes that the neural network consists of a series of stacked layers. Th
 
 Using these Keras layers, we can construct custom neural networks to perform time series prediction on oil wells.
 
-#### Custom Neural Network Tools (found in `qri.py`)
-
-- `load_data`: loads the data from `qri.pkl.gz`
-- `plot_test_predictions`: plots each chunk from the test set along with the prediction made for that set
-- `plot_train_valid_loss`: plots how the training and validation error decreased in training
-- `print_output_graph`: prints the computational graph for producing predictions to filename in a specified image format; useful for debugging and seeing how the network actually works
-- `plot_weights`: plots the weight matrix for each layer in the neural network; useful for understanding what the neural network is learning
-- `mae_clip`: provides a Theano expression for the mean absolute error with clipping to provide resistance to outliers; the `CLIP_VALUE` can be changed to adjust the number of standard deviations at which to begin clipping
-- `save_results`: pickles the results and saves them to a file
-- `save_history`: saves the training and validation loss history to a file
-
 ### Hyperparameter Optimization using Grid Search
 
 We used variants of the scripts provided in `cluster` to run our models on Harvard's Odyssey computing cluster. They can be modified to work on different kinds of clusters.
 
-### Bayesian Hyperparameter Optimization
-For more information, see [Spearmint](https://github.com/JasperSnoek/spearmint).
-
-## Contact
-Please contact <akashl@princeton.edu> or <michelleyang@berkeley.edu> with any questions about this repository. Thank you!
+## Members
+- Christian Alarcio: <christianalarcio@berkeley.ed>
+- Ellen Chan: <ellenchan@berkeley.edu>
+- Anais Sidhu: <asidhu@berkeley.edu>
+- Ruomeng (Michelle) Yang: <michelleyang@berkeley.edu>
