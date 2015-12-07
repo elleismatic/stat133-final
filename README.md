@@ -4,11 +4,6 @@
 
 This project contains the source files required to reproduce the results in our Statistics 133 Final Project. This README will explain how to use these files.
 
-## Data Sets
-
-- [Total Beta](http://people.stern.nyu.edu/adamodar/New_Home_Page/datafile/totalbeta.html/)
-- [PE Ratio](http://people.stern.nyu.edu/adamodar/New_Home_Page/datafile/pedata.html/)
-
 ## Directories and Files
 
 This project contains the following folders:
@@ -32,6 +27,15 @@ This project contains the following files:
 - `report/write_up.Rmd`: an R markdown file that contains a synthesis of our write up and code
 - `report/write_up.pdf`: a PDF version of our 'write_up.Rmd'
 - `resources/`:
+
+## Research Problem
+
+fill in.
+
+## Data Sets
+
+- [Total Beta](http://people.stern.nyu.edu/adamodar/New_Home_Page/datafile/totalbeta.html/)
+- [PE Ratio](http://people.stern.nyu.edu/adamodar/New_Home_Page/datafile/pedata.html/)
 
 ## Preprocessing
 

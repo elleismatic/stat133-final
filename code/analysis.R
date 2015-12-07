@@ -239,10 +239,10 @@ reg2 <- lm(Expected.Growth.Next.5.Years ~ Average.Unlevered.Beta +
 summary(reg2)
 
 # Graph the scatterplot of unlevered beta's impact on expected growth
-ggplot(clean_data, aes(x = Current.PE,
+ggplot(clean_data, aes(x = Average.Unlevered.Beta,
                        y = Expected.Growth.Next.5.Years)) +
-    geom_point() + xlab("Current PE Ratio") + ylab("Expected Growth (%)") +
-    ggtitle("Scatterplot of PE Ratio vs Expected Growth") +
+    geom_point() + xlab("Average Unlevered Beta") + ylab("Expected Growth (%)") +
+    ggtitle("Scatterplot of Average Unlevered Beta vs Expected Growth") +
     theme_classic()
 
 # Graph the scatterplot of PEG ratio's impact on expected growth after
@@ -258,7 +258,7 @@ ggplot(clean_data, aes(x = Current.PE,
     geom_abline(aes(slope = unname(coef(reg3)["Average.Unlevered.Beta"]),
                     intercept = unname(coef(reg3)["(Intercept)"])),
                 color = rgb(223, 84, 84, maxColorValue = 255)) +
-    ggtitle("PEG Ratio's Impact on Expected Growth") +
+    ggtitle("Current PE Ratio's Impact on Expected Growth") +
     theme_classic()
 
 # Graph the scatterplot of PEG ratio's impact on expected growth and the
@@ -268,7 +268,8 @@ reg4 <- lm(Expected.Growth.Next.5.Years ~ PEG.Ratio, data = clean_data)
 summary(reg4)
 ggplot(clean_data, aes(x = PEG.Ratio,
                        y = Expected.Growth.Next.5.Years)) +
-    geom_point() + xlab("PEG Ratio") + ylab("Expected Growth (%)") +
+    geom_point(color = rgb(223, 84, 84, 100, maxColorValue = 255)) +
+    xlab("PEG Ratio") + ylab("Expected Growth (%)") +
     geom_abline(aes(slope = unname(coef(reg3)["PEG.Ratio"]),
                     intercept = unname(coef(reg3)["(Intercept)"])),
                 color = rgb(84, 233, 233, maxColorValue = 255)) +
@@ -309,11 +310,14 @@ plot(clean_data$Expected.Growth.Next.5.Years, clean_data$Trailing.PE,
      main = paste("Correlation Between Expected Growth in the",
                   "Next 5 Years and Trailing PE"), col = 'navy blue')
 
+# Multiple angles
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
               clean_data$PEG.Ratio, z = clean_data$Average.Unlevered.Beta,
-              angle = 30, scale.y = .3,
+              angle = 30, scale.y = .3, pch = 16,
               xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta")
+              ylab = "PE Ratio", zlab = "Beta",
+              color = rgb(83, 223, 223, 100, maxColorValue = 255),
+              main = "3D Scatterplot of Expected Growth, PEG Ratio, and Beta")
 
 # Look at PE Ratio here:
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
@@ -322,7 +326,6 @@ scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
               xlab = "Expected Growth in Next 5 Years",
               ylab = "PE Ratio", zlab = "Beta")
 
-# Multiple angles
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
               y = clean_data$PEG.Ratio,
               z = clean_data$Average.Unlevered.Beta,

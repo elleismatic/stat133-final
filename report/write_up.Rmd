@@ -563,7 +563,6 @@ Analysis: I plotted the data for trailing price earnings and the expected growth
 
 Scatterplot from Multiple Angles: Correlations between Expected Growth, PE Raio, and Beta
 ```{r, eval=TRUE}
-
 # Multiple angles
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
               clean_data$PEG.Ratio, z = clean_data$Average.Unlevered.Beta,
@@ -602,7 +601,6 @@ scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
               angle = 200, scale.y = .3,
               xlab = "Expected Growth in Next 5 Years",
               ylab = "PE Ratio", zlab = "Beta")
-
 ```
 
 Analysis: I used a scatterplot in order to see the correlations between all of the variables when they are all present within the same graph. As a result of including all of the variables in one graph rather than having them in separate regressions, I am able to produce more accurate result when analyzing the impacts of growth and beta on the price earnings ratios. Although there is a wide range of industries that have various values of expected growth (thus showing no correlation along with beta and the price earnings ratio), we are still able to see the effects of beta on the price earnings ratio. There is an inverse correlation between the price earnings ratio and beta, since the price earnings ratios decreases when beta increases. In other words, beta has a negative impact on the price earnings ratios.
