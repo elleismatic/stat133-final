@@ -310,43 +310,57 @@ plot(clean_data$Expected.Growth.Next.5.Years, clean_data$Trailing.PE,
      main = paste("Correlation Between Expected Growth in the",
                   "Next 5 Years and Trailing PE"), col = 'navy blue')
 
-# Multiple angles
+# Make 3D scatterplot of Expected Growth in the Next 5 Years, PEG Ratio,
+# and Average Unlevered Beta, then examine the graph from multiple angles
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
-              clean_data$PEG.Ratio, z = clean_data$Average.Unlevered.Beta,
+              y = clean_data$PEG.Ratio,
+              z = clean_data$Average.Unlevered.Beta,
               angle = 30, scale.y = .3, pch = 16,
               xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta",
+              ylab = "PEG Ratio", zlab = "Beta",
               color = rgb(83, 223, 223, 100, maxColorValue = 255),
               main = "3D Scatterplot of Expected Growth, PEG Ratio, and Beta")
 
-# Look at PE Ratio here:
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
-              clean_data$PEG.Ratio, z = clean_data$Average.Unlevered.Beta,
-              angle = 280, scale.y = .3,
+              y = clean_data$PEG.Ratio,
+              z = clean_data$Average.Unlevered.Beta,
+              angle = 300, scale.y = .3, pch = 16,
               xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta")
+              ylab = "PEG Ratio", zlab = "Beta",
+              color = rgb(83, 223, 223, 100, maxColorValue = 255),
+              main = "3D Scatterplot of Expected Growth, PEG Ratio, and Beta")
 
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
-              y = clean_data$PEG.Ratio,
-              z = clean_data$Average.Unlevered.Beta,
-              angle = 200, scale.y = .3,
+              y = clean_data$Average.Unlevered.Beta,
+              z = clean_data$PEG.Ratio,
+              angle = 100, scale.y = .3, pch = 16,
               xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta")
+              ylab = "Beta", zlab = "PEG Ratio",
+              color = rgb(83, 223, 223, 100, maxColorValue = 255),
+              main = "3D Scatterplot of Expected Growth, PEG Ratio, and Beta")
+
+# Make 3D scatterplot of Expected Growth in the Next 5 Years, Current PE,
+# and Average Unlevered Beta, then examine the graph from multiple angles
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
-              y= clean_data$PEG.Ratio,
-              z = clean_data$Average.Unlevered.Beta,
-              angle = 230, scale.y = .3,
+              clean_data$Current.PE, z = clean_data$Average.Unlevered.Beta,
+              angle = 30, scale.y = .3, pch = 16,
               xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta")
+              ylab = "Current PE Ratio", zlab = "Beta",
+              color = rgb(83, 223, 223, 100, maxColorValue = 255),
+              main = "3D Scatterplot of Expected Growth, PE Ratio, and Beta")
+
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
-              y = clean_data$PEG.Ratio,
-              z = clean_data$Average.Unlevered.Beta,
-              angle = -400, scale.y = .3,
+              clean_data$Current.PE, z = clean_data$Average.Unlevered.Beta,
+              angle = 300, scale.y = .3, pch = 16,
               xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta")
+              ylab = "Current PE Ratio", zlab = "Beta",
+              color = rgb(83, 223, 223, 100, maxColorValue = 255),
+              main = "3D Scatterplot of Expected Growth, PE Ratio, and Beta")
+
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
-              y= clean_data$PEG.Ratio,
-              z = clean_data$Average.Unlevered.Beta,
-              angle = 200, scale.y = .3,
+              clean_data$Current.PE, z = clean_data$Average.Unlevered.Beta,
+              angle = 200, scale.y = .3, pch = 16,
               xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta")
+              ylab = "Current PE Ratio", zlab = "Beta",
+              color = rgb(83, 223, 223, 100, maxColorValue = 255),
+              main = "3D Scatterplot of Expected Growth, PE Ratio, and Beta")
