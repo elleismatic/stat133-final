@@ -37,8 +37,18 @@ This project contains the following files:
 
 fill in.
 
+Set working directory through
 ```r
-t0 = download.file(url, destfile, method = 'auto')
+setwd("~/Documents/UC\ Berkeley\ 2015-2016/Statistics\ 133/projects/final/")
+```
+and then extra raw data
+```{r}
+beta <- read.csv("raw_data/total_beta.csv", header = TRUE,  stringsAsFactors = FALSE)
+pe <- read.csv("raw_data/pe_data.csv", header = TRUE, stringsAsFactors = FALSE)
+```
+before combining data from the two files
+```{r}
+raw_data <- merge(beta, pe, by = intersect(names(beta), names(pe)))
 ```
 
 ## Analysis

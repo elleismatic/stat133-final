@@ -24,6 +24,9 @@ for (i in 1:length(raw_data)) {
     print(summary(raw_data[, i]))
 }
 
+# Duplicate raw_data to make edits
+clean_data <- raw_data
+
 # Remove blank columns
 clean_data$X <- NULL
 
