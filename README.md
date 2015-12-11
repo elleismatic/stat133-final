@@ -43,7 +43,7 @@ To test our hypothesis, we answered the following questions:
 Before we begin introducing anything else, here are some financial terminologies that may be useful:
 
 - **PE ratio:** market value per share divided by earnings per share (EPS). It is a ratio for valuing a company through its current share price relative to its per-share earnings
-- **Forward PE: ** a measure of PE using forcasted earnings as a part of the claculation. Often called the "estimated price to earnings", it is calculated using the market price per share over expected earnings per share
+- **Forward PE:** a measure of PE using forcasted earnings as a part of the claculation. Often called the "estimated price to earnings", it is calculated using the market price per share over expected earnings per share
 - **Trailing PE:** the most commonly used PE measure and is based on actual earnings, and therefore more accurate. It is calculated by dividing current share price by the trailing twelve months' earnings per share
 - **Beta:** a measure of volatility or risk of a company or industry in comparison to the market as a whole. There are two types of betas: levered and unlevered. The unlevered beta is the beta of a company without any debt or the measure of risk when removing the financial effects from adding debt to a firm's capital structure (finances). Levered beta is the beta of a company as a whole when accounting for debt
 - **PEG ratio:** a stock's PE ratio divided by the growth rate of its earnings for a specified time period. The ratio is used to determine a stock's value when taking into account a company's earnings growth and is considered to provide a more complete picture than PE
@@ -108,7 +108,7 @@ To see our complete methods and analysis, please see `code/analysis.R`. You can 
 
 To give a brief overview, we used histograms, 2D and 3D scatterplots, bubble plots, and linear regressions to analyze relationships within our data.
 
-- **Histograms:* Used to graphically display the distribution of a variable and its corresponding value to another variable
+- **Histograms:** Used to graphically display the distribution of a variable and its corresponding value to another variable
     - Looked at: Current PE, Forward PE, Total Levered Beta, Growth; PE Ratio to Average Unlevered Beta; Average Unlevered Beta to Expected Growth Rate; Current PE to Expected Growth Rate
     - We found that industries with high beta are growing industries such as online retail, real estate, and software and those with the lowest beta are stable markets such as finance or trucking
 - **Bubble Plots and 2D Scatterplots:** Used to graphically display the relationship between two variables and add emphasis to a third
