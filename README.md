@@ -104,7 +104,25 @@ write.csv(industries_only, file = "clean_data/industries_only.csv")
 
 ## Methods & Analysis
 
-To see our complete methods and analysis, please see `code/analysis.R`.
+To see our complete methods and analysis, please see `code/analysis.R`. You can alternatively visit `report/write_up.Rmd` or `report/write_up.pdf` to see a narrated version of our methods and analysis.
+
+To give a brief overview, we used histograms, 2D and 3D scatterplots, bubble plots, and linear regressions to analyze relationships within our data.
+
+- **Histograms:* Used to graphically display the distribution of a variable and its corresponding value to another variable
+    - Looked at: Current PE, Forward PE, Total Levered Beta, Growth; PE Ratio to Average Unlevered Beta; Average Unlevered Beta to Expected Growth Rate; Current PE to Expected Growth Rate
+    - We found that industries with high beta are growing industries such as online retail, real estate, and software and those with the lowest beta are stable markets such as finance or trucking
+- **Bubble Plots and 2D Scatterplots:** Used to graphically display the relationship between two variables and add emphasis to a third
+    - Graphed multiple charts, some of which controlled for outliers
+    - Looked at: Current PE ratio to Expected Growth in the Next 5 Years, with circles of size corresponding to the size of the specific industry
+    - We found that most industries had PE ratios that were below 150, but a few had extremely high Current PE, which skewed the data. When accounting for these outliers, we find that most larger industries have PE values between 50 and 100
+- **Linear regressions:** Used to illustrate the correlation and relationship between variables
+    - Had multiple scatterplots, some that controlled for outliers or other related variables to maintain accuracy
+    - Looked at the scatterplots and linear regressions of: Current PE to Expected Growth in the Next 5 Years; Expected Growth to Average Unlevered Beta, Current PE, PEG Ratio
+    - We found that there was a strong statistical significance of the PEG ratio to growth, as shown in the figure to the right
+- **3D Scatterplots:** Used to analyze the relationship between multiple variables
+Examined graph from multiple angles
+    - Looked at the 3D plot of: Expected Growth in the Next 5 Years, PEG Ratio, and Average Unlevered Beta; Expected Growth in the Next 5 Years, Current PE Ratio, and Average Unlevered Beta
+    - We found that higher beta corresponded with expected growth (as predicted), higher beta was correlated with higher PEG ratio, and that lower expected growth equated with higher PEG ratios
 
 ## Findings & Reports
 
