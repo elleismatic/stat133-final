@@ -2,7 +2,7 @@
 
 <img src="http://www.hpcwire.com/wp-content/uploads/2011/02/financialmodeling.jpg" alt="Financial Modeling" height="400"/>
 
-This project contains the source files required to reproduce the results in our Statistics 133 Final Project. This README will explain how to use these files.
+This project contains the source files required to reproduce the results in our Statistics 133 Final Project. This README will explain how to use these files. For full details, please visit `report/write_up.Rmd` or `report/write_up.pdf`.
 
 ## Directories and Files
 
@@ -20,6 +20,7 @@ This project contains the following files:
 - `clean_data/`:
 - `code/preprocessing.R`: contains the code for preprocessing all data
 - `code/analysis.R`: contains the code for analyzing our data
+- `final.Rproj`: contains the RStudio Project for this project
 - `images/`:
 - `raw_data/pe_data.csv`: PE ratio data from a CSV file downloaded online
 - `raw_data/total_beta.csv`: beta data of different industries from a CSV file downloaded online
@@ -30,7 +31,23 @@ This project contains the following files:
 
 ## Research Problem
 
-fill in.
+Our findings and analysis were lead by our hypothesis:
+
+- Technology industries show higher growth and higher beta, and therefore lower P/E ratios.
+
+To test our hypothesis, we answered the following questions:
+
+- What is the relationship between beta and the payout percentage?
+- What is the relationship between beta and expected growth rate?
+
+Before we begin introducing anything else, here are some financial terminologies that may be useful:
+
+- **PE ratio:** market value per share divided by earnings per share (EPS). It is a ratio for valuing a company through its current share price relative to its per-share earnings
+- **Forward PE: ** a measure of PE using forcasted earnings as a part of the claculation. Often called the "estimated price to earnings", it is calculated using the market price per share over expected earnings per share
+- **Trailing PE:** the most commonly used PE measure and is based on actual earnings, and therefore more accurate. It is calculated by dividing current share price by the trailing twelve months' earnings per share
+- **Beta:** a measure of volatility or risk of a company or industry in comparison to the market as a whole. There are two types of betas: levered and unlevered. The unlevered beta is the beta of a company without any debt or the measure of risk when removing the financial effects from adding debt to a firm's capital structure (finances). Levered beta is the beta of a company as a whole when accounting for debt
+- **PEG ratio:** a stock's PE ratio divided by the growth rate of its earnings for a specified time period. The ratio is used to determine a stock's value when taking into account a company's earnings growth and is considered to provide a more complete picture than PE
+- **Payout ratio:** a proportion of earnings paid out as dividends to shareholders and is calculated by dividing divendens per share over earnings per share. It is known that the payout ratio is directly correlated with the PE ratio
 
 ## Data Sets
 
@@ -39,29 +56,64 @@ fill in.
 
 ## Preprocessing
 
-fill in.
+We downloaded two datasets as CSV files from the NYU Stern Business School's data archives and placed it in our `raw_data` folder. Before we begin, we set working directory through the following R code. For this to work on your computer, you will need to change the path of your working directory to the appropriate one of the `final` folder on your own device.
 
-Set working directory through
 ```r
 setwd("~/Documents/UC\ Berkeley\ 2015-2016/Statistics\ 133/projects/final/")
 ```
-and then extra raw data
+
+We then extra raw data and merge the two files through the following code:
+
 ```{r}
+# Extract raw data
 beta <- read.csv("raw_data/total_beta.csv", header = TRUE,  stringsAsFactors = FALSE)
 pe <- read.csv("raw_data/pe_data.csv", header = TRUE, stringsAsFactors = FALSE)
-```
-before combining data from the two files
-```{r}
+
+# Combine data from the two files
 raw_data <- merge(beta, pe, by = intersect(names(beta), names(pe)))
 ```
 
-## Analysis
+Next, we inspect our data through methods such as:
 
-fill in
+```{r}
+# Inspect merged data
+head(raw_data)
+summary(raw_data)
+names(raw_data)
+str(raw_data)
+```
+
+Then, we make a copy of raw_data to a new data frame called "clean_data".
+
+```{r}
+# Duplicate raw_data to make edits
+clean_data <- raw_data
+```
+
+Next, we renamed columns, converted character columns to numeric vectors, and removed extraneous rows with missing values. Because we have now cleaned our data set, we can now inspect clean_data through finding the summaries, plots, min and max values, and histograms. To see the actual code, please visit `code/preprocessing.R`.
+
+Finally, we create CSV files for our cleaned data and placed it into the clean_data directory.
+
+```{r}
+# Create CSV files for clean data
+file.create("clean_data/clean_data.csv")
+write.csv(clean_data, file = "clean_data/clean_data.csv")
+file.create("clean_data/industries_only.csv")
+write.csv(industries_only, file = "clean_data/industries_only.csv")
+```
+
+## Methods & Analysis
+
+To see our complete methods and analysis, please see `code/analysis.R`.
 
 ## Findings & Reports
 
-fill in
+Through our analysis, we tried to answer our hypothesis through our guiding questions, which we answer below.
+
+- We found from our analysis that PE is negatively correlated with beta. That is, as beta increases, PE decreases. Thus, there is a negative correlation between beta and the payout ratio.
+- Industries with higher beta also have higher growth rates, as we saw in our findings. Thus, industries such as technology -- software and online retail -- have higher growth but are less stable than industries such as finance, which also have a lower beta.
+
+Our findings state that industries with higher beta also has higher growth. However, because higher beta is negatively correlated with payout ratio, then industries with higher beta also has a low PE. Thus, for the technology industry with a higher beta, it also has high growth, which also leads the industry to have a low PE value.
 
 ## Members
 - Christian Alarcio: <christianalarcio@berkeley.edu>
@@ -73,7 +125,7 @@ fill in
 
 The MIT License (MIT)
 
-Copyright (c) 2015 Michelle
+Copyright (c) 2015 Ruomeng (Michelle) Yang
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
