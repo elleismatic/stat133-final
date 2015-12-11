@@ -71,19 +71,20 @@ hist(clean_data$Current.PE, border = NA,
      ylab = "Frequency", col = rgb(250, 150, 150, 100, maxColorValue = 255))
 dat1 <- data.frame(PE = industries_only$Current.PE,
                    beta = industries_only$Average.Unlevered.Beta)
-ggplot(dat1, aes(x = beta, y = PE)) +
+ggplot(dat1, aes(x = beta, y = PE)) + xlab("Average unlevered beta") +
     geom_line(stat = "identity", color = beta_interval) + 
     ggtitle("Beta vs PE Ratio") + theme_classic() + 
-    scale_x_continuous(breaks = beta_intervals) + 
+    scale_x_continuous(breaks = beta_intervals) + ylab("Current PE ratio") +
     scale_y_continuous(breaks = seq(from = 0, to = 1500, by = 100)) 
 summary(industries_only$Current.PE)
 
 # Bar plot of Beta versus Expected Growth Rate in the Next 5 Years
 dat2 <- data.frame(beta = clean_data$Average.Unlevered.Beta,
                    growth = clean_data$Expected.Growth.Next.5.Years)
-ggplot(dat2, aes(x = beta, y = growth)) +
-    geom_bar(position = "identity", stat = "identity") + 
-    ggtitle("Beta vs Expected Growth Rate") + theme_classic()
+ggplot(dat2, aes(x = beta, y = growth)) + xlab("Average unlevered beta") +
+    geom_bar(position = "identity", stat = "identity") +
+    ggtitle("Beta vs Expected Growth Rate") + theme_classic() +
+    ylab("Expected growth (in the next 5 years)")
 
 # Graph the scatterplot of unlevered beta's impact on expected growth
 # when accounting for their regression
@@ -109,22 +110,30 @@ sorted_beta_growth <- data.frame(beta = sort_beta, growth = sorted_growth1)
 dat3 <- subset(sorted_beta_growth, sorted_growth1 > 0)
 plot(dat3$growth, dat3$beta,
      col = rgb(100, 100, 100, 150, maxColorValue = 255), pch = 16,
-     bg = rgb(200, 200, 200, maxColorValue = 255),
-     xlab = "growth", ylab = "beta", main = "Beta vs Growth")
+     bg = rgb(200, 200, 200, maxColorValue = 255), main = "Beta vs Growth",
+     xlab = "Expected growth (%)", ylab = "Average unlevered beta")
 fit_growth_beta <- lm(beta ~ growth, data = dat3)
 abline(fit_growth_beta, col = rgb(100, 100, 100, maxColorValue = 255))
 summary(fit_growth_beta)
 
 # Density curve of Current PE and of Expected Growth in the Next 5 Years
-plot(density(clean_data$Current.PE), main = "Density Plot of Current PE")
+plot(density(clean_data$Current.PE), main = "Density Plot of Current PE",
+     xlab = "Current PE", ylab = "Density",
+     col = rgb(50, 200, 200, maxColorValue = 255))
+polygon(density(clean_data$Current.PE), border = NA,
+        col = rgb(50, 200, 200, maxColorValue = 255))
 plot(density(clean_data$Expected.Growth.Next.5.Years),
-     main = "Density Plot of Expected Growth in the Next 5 Years")
+     main = "Density Plot of Expected Growth in the Next 5 Years",
+     xlab = "Expected growth (%)", ylab = "Density", border = NA,
+     col = rgb(200, 50, 50, maxColorValue = 255))
+polygon(density(clean_data$Expected.Growth.Next.5.Years),
+        border = NA, col = rgb(200, 50, 50, maxColorValue = 255))
 
 # Scatter plot of Current PE to Expected Growth in the Next 5 Years
 plot(clean_data$Current.PE, clean_data$Expected.Growth.Next.5.Years,
      col = rgb(50, 200, 200, 100, maxColorValue = 255), pch = 16,
-     bg = rgb(200, 200, 200, maxColorValue = 255),
-     main = "Scatterplot of Forward PE Ratio")
+     bg = rgb(200, 200, 200, maxColorValue = 255), xlab = "Current PE",
+     ylab = "Expected growth (%)", main = "Current PE vs Expected Growth")
 
 # Make a linear regression of Current PE to Expected Growth in the Next 5 Years
 fit1 <- lm(Expected.Growth.Next.5.Years ~ Current.PE, data = clean_data)
@@ -190,26 +199,29 @@ ggplot(data = clean_data, aes(x = Current.PE,
     ylab("Expected Growth in the Next 5 Years") +
     ggtitle("Plot of Current PE to Expected Growth") + theme_classic()
 
-# Make a histogram of Current PE to Expected Growth for industries with
+# Make a bar plot of Current PE to Expected Growth for industries with
 # pe, p, fulfilling p < 300
 ggplot(dat4, aes(x = pe, y = growth)) + geom_line(color = "#ebcefb") +
     geom_bar(position = "identity", stat = "identity", color = "#000000") +
-    ggtitle("Beta vs Expected Growth Rate") + theme_classic()
+    ggtitle("Beta vs Expected Growth Rate") + xlab("Current PE ratio") +
+    ylab("Expected growth (%)") + theme_classic()
 
-# Make a histogram of Current PE to Expected Growth for industries with
+# Make a bar plot of Current PE to Expected Growth for industries with
 # pe, p, fulfilling 100 <= p < 200
 dat5 <- subset(sorted_pe_growth, pe >= 100 & pe < 300)
 ggplot(dat5, aes(x = pe, y = growth)) + geom_line(color = "#ebcefb") +
     geom_bar(position = "identity", stat = "identity", color = "#000000") +
-    ggtitle("Beta vs Expected Growth Rate") + theme_classic()
+    ggtitle("Beta vs Expected Growth Rate") + xlab("Current PE ratio") +
+    ylab("Expected growth (%)") + theme_classic()
 
-# Make a histogram of Current PE to Expected Growth for industries with
+# Make a bar plot of Current PE to Expected Growth for industries with
 # pe, p, fulfilling p < 100
 dat6 <- subset(sorted_pe_growth, pe < 100)
 ggplot(dat6, aes(x = pe, y = growth)) + geom_line(color = "#ebcefb") +
     geom_bar(position = "identity", stat = "identity",
              color = "#000000") +
-    ggtitle("Beta vs Expected Growth Rate") + theme_classic()
+    ggtitle("Beta vs Expected Growth Rate") + xlab("Current PE ratio") +
+    ylab("Expected growth (%)") + theme_classic()
 
 # Make bubble plots of Current PE and Expected Growth in the
 # Next 5 Years for different industries

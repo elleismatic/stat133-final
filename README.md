@@ -17,11 +17,13 @@ This project contains the following folders:
 This project contains the following files:
 - `README.md`: gives an overview of this project
 - `skeleton.R`: creates all directories in the project
-- `clean_data/`:
+- `clean_data/clean_data.csv`: contains the cleaned data with the row "Total Market"
+- `clean_data/industries_only.csv`: contains the cleaned data without the row "Total Market"
 - `code/preprocessing.R`: contains the code for preprocessing all data
 - `code/analysis.R`: contains the code for analyzing our data
 - `final.Rproj`: contains the RStudio Project for this project
-- `images/`:
+- `images/*.pdf`: pdf version of images generated in `code/analysis.R`
+- `images/*.png`: png version of images generated in `code/analysis.R`
 - `raw_data/pe_data.csv`: PE ratio data from a CSV file downloaded online
 - `raw_data/total_beta.csv`: beta data of different industries from a CSV file downloaded online
 - `report/extra_credit_presentation.pptx`: final PowerPoint for extra credit
