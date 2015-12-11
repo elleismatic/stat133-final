@@ -5,7 +5,8 @@
 setwd("~/Documents/UC\ Berkeley\ 2015-2016/Statistics\ 133/projects/final/")
 
 # Extract raw data
-beta <- read.csv("raw_data/total_beta.csv", header = TRUE,  stringsAsFactors = FALSE)
+beta <- read.csv("raw_data/total_beta.csv", header = TRUE,
+                 stringsAsFactors = FALSE)
 pe <- read.csv("raw_data/pe_data.csv", header = TRUE, stringsAsFactors = FALSE)
 
 # Combine data from the two files
@@ -31,24 +32,30 @@ clean_data <- raw_data
 clean_data$X <- NULL
 
 # Rename column titled Aggregate.Mkt.Cap..Net.Income
-clean_data$Aggregate.Mkt.Cap.Net.Income <- clean_data$Aggregate.Mkt.Cap..Net.Income
+clean_data$Aggregate.Mkt.Cap.Net.Income <-
+    clean_data$Aggregate.Mkt.Cap..Net.Income
 clean_data$Aggregate.Mkt.Cap..Net.Income <- NULL
 
 # Rename column titled clean_data$Aggregate.Mkt.Cap..Trailing.Net.Income
-clean_data$Aggregate.Mkt.Cap.Trailing.Net.Income <- clean_data$Aggregate.Mkt.Cap..Trailing.Net.Income
+clean_data$Aggregate.Mkt.Cap.Trailing.Net.Income <-
+    clean_data$Aggregate.Mkt.Cap..Trailing.Net.Income
 clean_data$Aggregate.Mkt.Cap..Trailing.Net.Income <- NULL
 
 # Rename column titled Number.of.firms
 clean_data$Number.of.Firms <- clean_data$Number.of.firms
 clean_data$Number.of.firms <- NULL
 
-# Rename column titled Average.correlation and turn it into a numeric column vector
-clean_data$Average.Correlation <- as.numeric(gsub("%", "", clean_data$Average.correlation))
+# Rename column titled Average.correlation and turn it into a numeric column
+# vector
+clean_data$Average.Correlation <-
+    as.numeric(gsub("%", "", clean_data$Average.correlation))
 clean_data$Average.correlation <- NULL
 head(clean_data$Average.Correlation)
 
-# Rename column titled Expected.growth...next.5.years and turn it into a numeric column vector
-clean_data$Expected.Growth.Next.5.Years <- as.numeric(gsub("%", "", clean_data$Expected.growth...next.5.years))
+# Rename column titled Expected.growth...next.5.years and turn it into a
+# numeric column vector
+clean_data$Expected.Growth.Next.5.Years <-
+    as.numeric(gsub("%", "", clean_data$Expected.growth...next.5.years))
 clean_data$Expected.growth...next.5.years <- NULL
 head(clean_data$Expected.Growth.Next.5.Years)
 
@@ -56,7 +63,9 @@ head(clean_data$Expected.Growth.Next.5.Years)
 clean_data <- clean_data[-which(clean_data$Industry == "Unclassified"),]
 
 # Make copy of clean_data without the row "Unclassified" or "Total Market"
-industries_only <- clean_data[-which(clean_data$Industry == "Unclassified" | clean_data$Industry == "Total Market"),]
+industries_only <-
+    clean_data[-which(clean_data$Industry == "Unclassified" |
+                          clean_data$Industry == "Total Market"),]
 
 # Inspect elements of the final clean_data and industries_only
 print("Summary of elements in clean_data")

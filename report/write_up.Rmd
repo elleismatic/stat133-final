@@ -9,7 +9,7 @@ output: pdf_document
 
 Our findings and analysis from this project were led by our hypothesis:
 
-\em{Technology industries show higher growth and higher beta, and therefore lower P/E ratios.}
+\em{Technology industries show higher growth and higher beta, and therefore lower P/E ratios.}\em
 
 We answered the following questions:
 
@@ -18,18 +18,24 @@ We answered the following questions:
 
 Before we introduce our dataset and preprocessing steps, here is an explanation of some of the financial terminology.
 
-<insert terminology>
+- \em{PE ratio: }\em market value per share divided by earnings per share (EPS). It is a ratio for valuing a company through its current share price relative to its per-share earnings
+- \em{Forward PE: }\em a measure of PE using forcasted earnings as a part of the claculation. Often called the "estimated price to earnings", it is calculated using the market price per share over expected earnings per share
+- \em{Trailing PE: }\em the most commonly used PE measure and is based on actual earnings, and therefore more accurate. It is calculated by dividing current share price by the trailing twelve months' earnings per share
+- \em{Beta: }\em a measure of volatility or risk of a company or industry in comparison to the market as a whole. There are two types of betas: levered and unlevered. The unlevered beta is the beta of a company without any debt or the measure of risk when removing the financial effects from adding debt to a firm's capital structure (finances). Levered beta is the beta of a company as a whole when accounting for debt
+- \em{PEG: }\em a stock's PE ratio divided by the growth rate of its earnings for a specified time period. The ratio is used to determine a stock's value when taking into account a company's earnings growth and is considered to provide a more complete picture than PE
+- \em{Payout ratio: }\em a proportion of earnings paid out as dividends to shareholders and is calculated by dividing divendens per share over earnings per share. It is known that the payout ratio is directly correlated with the PE ratio
 
 #Dataset & Preprocessing
 
-To begin the project, two datasets were downloaded as CSV files from the NYU Stern Business School's data archives. There was an online link that automatically downloaded the data we needed, so no there was no R needed. We start by setting the working directory, then reading the two CSV files. The files were then merged and assigned to the data frame "raw_data".
+We began by downloading two datasets as CSV files from the NYU Stern Business School's data archives. There was an online link that automatically downloaded the data we needed, so no R was needed. We then set the working directory and read the two CSV files. The files were then merged and assigned to the data frame "raw_data".
 
-```{r, eval=TRUE, tidy=TRUE}
+```{r, eval=TRUE}
 # Set working directory
 setwd("~/Documents/UC\ Berkeley\ 2015-2016/Statistics\ 133/projects/final/")
 
 # Extract raw data
-beta <- read.csv("raw_data/total_beta.csv", header = TRUE,  stringsAsFactors = FALSE)
+beta <- read.csv("raw_data/total_beta.csv", header = TRUE,
+                 stringsAsFactors = FALSE)
 pe <- read.csv("raw_data/pe_data.csv", header = TRUE, stringsAsFactors = FALSE)
 
 # Combine data from the two files
@@ -38,7 +44,7 @@ raw_data <- merge(beta, pe, by = intersect(names(beta), names(pe)))
 
 We then inspected the contents of the data frame.
 
-```{r, tidy=TRUE}
+```{r, eval=FALSE}
 # Inspect merged data
 head(raw_data)
 summary(raw_data)
@@ -53,22 +59,23 @@ for (i in 1:length(raw_data)) {
 }
 ```
 
-Further inspection revealed that column "X" is a column full of NA values We start to clean data by removing this column through subsetting and reassigning this subset as the dataframe "clean_data".
+Further inspection revealed that column "X" is a column full of NA values. We start to clean data by removing this column by subsetting and reassigning this subset as the data frame "clean_data". We also find that some columns have unideal names, which we rename.
 
-```{r, eval=TRUE, tidy=TRUE}
+```{r, eval=TRUE}
+# Duplicate raw_data to make edits
+clean_data <- raw_data
+
 # Remove blank columns
-clean_data <- subset(raw_data, select = -X)
-```
+clean_data$X <- NULL
 
-We also find that some columns have unideal names, which we rename.
-
-```{r, eval=TRUE, tidy=TRUE}
 # Rename column titled Aggregate.Mkt.Cap..Net.Income
-clean_data$Aggregate.Mkt.Cap.Net.Income <- clean_data$Aggregate.Mkt.Cap..Net.Income
+clean_data$Aggregate.Mkt.Cap.Net.Income <-
+    clean_data$Aggregate.Mkt.Cap..Net.Income
 clean_data$Aggregate.Mkt.Cap..Net.Income <- NULL
 
 # Rename column titled clean_data$Aggregate.Mkt.Cap..Trailing.Net.Income
-clean_data$Aggregate.Mkt.Cap.Trailing.Net.Income <- clean_data$Aggregate.Mkt.Cap..Trailing.Net.Income
+clean_data$Aggregate.Mkt.Cap.Trailing.Net.Income <-
+    clean_data$Aggregate.Mkt.Cap..Trailing.Net.Income
 clean_data$Aggregate.Mkt.Cap..Trailing.Net.Income <- NULL
 
 # Rename column titled Number.of.firms
@@ -76,83 +83,37 @@ clean_data$Number.of.Firms <- clean_data$Number.of.firms
 clean_data$Number.of.firms <- NULL
 ```
 
-We then turn the two character columns, Average Correlation and Expected Growth in Next 5 Years, into numeric vectors for more accurate analysis of numbers.
+We then turn the two character columns, Average Correlation and Expected Growth in Next 5 Years, into numeric vectors to accurately analyze those numbers.
 
-```{r, eval=TRUE, tidy=TRUE}
-# Rename column titled Average.correlation and turn it into a numeric column vector
-clean_data$Average.Correlation <- as.numeric(gsub("%", "", clean_data$Average.correlation))
+```{r, eval=TRUE}
+# Rename column titled Average.correlation and turn it into a numeric column
+# vector
+clean_data$Average.Correlation <-
+    as.numeric(gsub("%", "", clean_data$Average.correlation))
 clean_data$Average.correlation <- NULL
 head(clean_data$Average.Correlation)
 
-# Rename column titled Expected.growth...next.5.years and turn it into a numeric column vector
-clean_data$Expected.Growth.Next.5.Years <- as.numeric(gsub("%", "", clean_data$Expected.growth...next.5.years))
+# Rename column titled Expected.growth...next.5.years and turn it into a
+# numeric column vector
+clean_data$Expected.Growth.Next.5.Years <-
+    as.numeric(gsub("%", "", clean_data$Expected.growth...next.5.years))
 clean_data$Expected.growth...next.5.years <- NULL
 head(clean_data$Expected.Growth.Next.5.Years)
 ```
 
-Then, we proceed to removing rows that contain data that cannot be evaluated or will not aid in our analysis. We found that the row "Unclassified" would fit that description. We also considered removing "Total Market", since that did not pertain to the entire industry but is simply an aggregate of all other industries.
+Then, we proceed to removing rows that contain data that cannot be evaluated or will not aid in our analysis. We found that the row "Unclassified" fit that description. We also considered removing "Total Market", since that did not pertain to the entire industry but is simply an aggregate of all other industries.
 
-```{r, eval=TRUE, tidy=TRUE}
+```{r, eval=TRUE}
 # Make copy of clean_data without the row "Unclassified"
 clean_data <- clean_data[-which(clean_data$Industry == "Unclassified"),]
 
 # Make copy of clean_data without the row "Unclassified" or "Total Market"
-industries_only <- clean_data[-which(clean_data$Industry == "Unclassified" | clean_data$Industry == "Total Market"),]
+industries_only <-
+    clean_data[-which(clean_data$Industry == "Unclassified" |
+                          clean_data$Industry == "Total Market"),]
 ```
 
-We then inspect elements of our cleaned datasets.
-
-```{r, eval=TRUE, tidy=TRUE}
-# Inspect elements of the final clean_data and industries_only
-print("Summary of elements in clean_data")
-for (i in 1:length(clean_data)) {
-    print(paste0("Summary of ", names(clean_data)[i], ":"))
-    print(summary(clean_data[, i]))
-}
-
-print("Summary of elements in industries_only")
-for (i in 1:length(industries_only)) {
-    print(paste0("Summary of ", names(industries_only)[i], ":"))
-    print(summary(industries_only[, i]))
-}
-
-# Basic plots of variables
-plot(clean_data$Average.Unlevered.Beta)
-plot(clean_data$Average.Levered.Beta)
-plot(clean_data$Current.PE)
-plot(clean_data$Forward.PE)
-plot(clean_data$PEG.Ratio)
-plot(clean_data$Average.Correlation)
-plot(clean_data$Expected.Growth.Next.5.Years)
-
-# Exploration of industries that have certain maximum and minimum values
-clean_data[which.max(clean_data$Average.Unlevered.Beta), "Industry"]
-clean_data[which.min(clean_data$Average.Unlevered.Beta), "Industry"]
-clean_data[which.max(clean_data$Average.Levered.Beta), "Industry"]
-clean_data[which.min(clean_data$Average.Levered.Beta), "Industry"]
-clean_data[which.max(clean_data$Current.PE), "Industry"]
-clean_data[which.min(clean_data$Current.PE), "Industry"]
-clean_data[which.max(clean_data$PEG.Ratio), "Industry"]
-clean_data[which.min(clean_data$PEG.Ratio), "Industry"]
-clean_data[which.max(clean_data$Expected.Growth.Next.5.Years), "Industry"]
-clean_data[which.min(clean_data$Expected.Growth.Next.5.Years), "Industry"]
-
-# Histograms of select variables
-hist(clean_data$Average.Unlevered.Beta,
-     main = "Histogram of Average Unlevered Beta",
-     xlab = "Average Unlevered Beta")
-hist(clean_data$Average.Levered.Beta,
-     main = "Histogram of Average Levered Beta",
-     xlab = "Average Levered Beta")
-hist(clean_data$PEG.Ratio,
-     main = "Histogram of PEG Ratio",
-     xlab = "PEG Ratio")
-hist(clean_data$Expected.Growth.Next.5.Years,
-     main = "Histogram of Expected Growth in the Next 5 Years",
-     xlab = "Expected Growth in the Next 5 Years")
-```
-
-Finally, we create CSV files for our cleaned data and placed it into the clean_data directory.
+We then inspect elements of our cleaned dataset through finding the summaries, plots, min and max values, and histograms. For the complete code, see `code/preprocessing.R`. Finally, we create CSV files for our cleaned data and placed it into the clean_data directory.
 
 ```{r, eval=FALSE}
 # Create CSV files for clean data
@@ -164,15 +125,14 @@ write.csv(industries_only, file = "clean_data/industries_only.csv")
 
 #Methods & Analysis
 
-Before we can analyze our data, we will first need to set up the packages and dependencies we will be using. We will also need to retrieve and read our clean dataset.
+Before we can analyze our data, we will first need to set up the packages and dependencies we need. We will also need to retrieve and read our clean dataset before we begin. For our complete analysis, please see `code/analysis.R`, as some parts of the code are missing.
 
-```{r, eval=TRUE, tidy=TRUE}
+```{r, eval=TRUE}
 # Set working directory back for knitting
 setwd("/Users/Michelle/Documents/UC Berkeley 2015-2016/Statistics 133/projects/final/report")
 
 # Set up ggplot2
 library(ggplot2)
-dev.off()
 
 # Set up readr
 library(readr)
@@ -187,35 +147,46 @@ library(stringr)
 setwd("~/Documents/UC\ Berkeley\ 2015-2016/Statistics\ 133/projects/final/")
 
 # Read data files
-clean_data <- read.csv("clean_data/clean_data.csv", header = TRUE, stringsAsFactors = FALSE)
-industries_only <- read.csv("clean_data/industries_only.csv", header = TRUE, stringsAsFactors = FALSE)
+clean_data <- read.csv("clean_data/clean_data.csv", header = TRUE,
+                       stringsAsFactors = FALSE)
+industries_only <- read.csv("clean_data/industries_only.csv", header = TRUE,
+                            stringsAsFactors = FALSE)
+
+# A look at clean_data
+str(clean_data)
 ```
 
+We first analyze the relationship between current PE, forward PE, beta, and expected growth in the next 5 years.
 
------- ELLEN ------------
-```{r, eval=TRUE, tidy=TRUE}
+```{r, eval=TRUE}
 # Scatter plot of Current PE to Forward PE
 ggplot(clean_data, aes(x = Current.PE, y = Forward.PE)) +
     geom_point(color = rgb(100, 200, 200, 100, maxColorValue = 255)) + 
-    ggtitle("Current PE Ratio vs. Forward PE Ratio") + xlab("Current PE Ratio") +
-    ylab("Foward PE Ratio") + theme_classic()
+    ggtitle("Current PE Ratio vs. Forward PE Ratio") +
+    xlab("Current PE Ratio") + ylab("Foward PE Ratio") + theme_classic()
 
-# Bar plot of Current PE, Forward PE, Total Levered Beta, and Expected
-# Growth in the Next 5 Years
-barplot(clean_data$Current.PE, border = NA, xlab = "Current PE", ylab = "Frequency",
-        col = rgb(200, 100, 100, 100, maxColorValue = 255),
-        main = "Bar Plot of Current PE Ratio")
-barplot(clean_data$Forward.PE, border = NA, xlab = "Foward PE", ylab = "Frequency",
-        col = rgb(200, 100, 200, 100, maxColorValue = 255),
-        main = "Bar Plot of Forward PE Ratio")
-barplot(clean_data$Total.Levered.Beta, border = NA, xlab = "Total levered beta",
-        ylab = "Frequency", col = rgb(0, 150, 150, 100, maxColorValue = 255),
-        main = "Bar Plot of Total Levered Beta")
-barplot(clean_data$Expected.Growth.Next.5.Years, border = NA,
-        xlab = "Expected growth rate (next 5 years)", ylab = "Frequency",
-        col = rgb(150, 150, 250, 100, maxColorValue = 255),
-        main = "Bar Plot of Forward PE Ratio")
+# Histogram of Forward PE, Total Levered Beta, and Expected Growth in the
+# Next 5 Years
+hist(clean_data$Current.PE, border = NA,
+     main = "Histogram of Current PE Ratio", xlab = "Current PE",
+     ylab = "Frequency", col = rgb(200, 100, 100, 100, maxColorValue = 255))
+hist(clean_data$Forward.PE, border = NA,
+     main = "Histogram of Forward PE Ratio", xlab = "Foward PE",
+     ylab = "Frequency", col = rgb(200, 100, 200, 100, maxColorValue = 255))
+hist(clean_data$Total.Levered.Beta, border = NA, xlab = "Total levered beta",
+     ylab = "Frequency", col = rgb(0, 150, 150, 100, maxColorValue = 255),
+     main = "Histogram of Total Levered Beta")
+hist(clean_data$Expected.Growth.Next.5.Years, border = NA,
+     xlab = "Expected growth rate (next 5 years)", ylab = "Frequency",
+     col = rgb(150, 150, 250, 100, maxColorValue = 255),
+     main = "Histogram of Expected Growth Rate in the Next 5 Years")
+```
 
+We find that foward PE ratio is lower for each of the current PE ratios in this graph. This makes sense because the denominator of forward PE ratio is expected earnings per share while the denominator of current PE ratio is earnings per share. We know that expected earnings per share is higher than current earnings per share, so our graph makes sense.
+
+We then wrote a function beta_interval to place our betas into 5 intervals. We find that we have 8 industries in the highest beta interval, which are companies in growing markets such as online retail, real estate, etc. Companies with the lowest beta are stable markets such as financial services or trucking.
+
+```{r, eval=TRUE}
 # Analyze which industries are in the highest and lowest beta interval
 beta_intervals <- seq(from = 0, to = 1.5, by = 0.3)
 interval_fun <- function(beta) {
@@ -229,19 +200,20 @@ beta_interval <- unlist(lapply(clean_data$Average.Unlevered.Beta,
                                FUN = interval_fun))
 as.vector(clean_data$Industry[unlist(beta_interval) == 5])
 as.vector(clean_data$Industry[unlist(beta_interval) == 1])
-```
 
-We find that we have 8 industries in the highest beta interval, which are companies in growing markets such as online retail, real estate, etc. Companies with lowest beta are stable markets such as financial services (Non-Bank or insurance), or trucking.
-
-```{r, eval=TRUE, tidy=TRUE}
 # Make a histogram of the beta intervals created above
 dfbeta_interval <- data.frame(table(unlist(beta_interval)))
 names(dfbeta_interval) <- c("Interval", "Frequency")
-hist(beta_interval, main = "Histogram of Beta Intevals",
-     xlab = "Beta intervals", col = rgb(200, 50, 150, 100, maxColorValue = 255),
-     border = NA) 
+hist(beta_interval, border = NA, main = "Histogram of Beta Intevals",
+     xlab = "Beta intervals", ylab = "Frequency",
+     col = rgb(200, 50, 150, 100, maxColorValue = 255))
 
-# Plot of Beta versus PE Ratio by given beta intervals
+# Histogram of PE Ratio and bar plot of Beta versus PE Ratio by given beta
+# intervals
+axis(side = 1, at = seq(0,1500,by = 300))
+hist(clean_data$Current.PE, border = NA,
+     main = "Histogram of Current PE Ratio", xlab = "Current PE",
+     ylab = "Frequency", col = rgb(250, 150, 150, 100, maxColorValue = 255))
 dat1 <- data.frame(PE = industries_only$Current.PE,
                    beta = industries_only$Average.Unlevered.Beta)
 ggplot(dat1, aes(x = beta, y = PE)) +
@@ -249,25 +221,62 @@ ggplot(dat1, aes(x = beta, y = PE)) +
     ggtitle("Beta vs PE Ratio") + theme_classic() + 
     scale_x_continuous(breaks = beta_intervals) + 
     scale_y_continuous(breaks = seq(from = 0, to = 1500, by = 100)) 
-summary(industries_only$Current.PE)
 ```
 
-Industries that have average betas of 0.9-1.2 (Interval 4) have higher PE ratios.
+From the histogram, we can see that most industries have PE ratios of 0-200, with a few outliers. From the plot, we find that industries with average betas of 0.9-1.2 (Interval 4) have relatively higher PE ratios, including the outliers.
 
-```{r, eval=TRUE, tidy=TRUE}
+We further explored beta through making a bar plot of average unlevered beta to the expected growth rate.
+
+```{r, eval=TRUE}
 # Bar plot of Beta versus Expected Growth Rate in the Next 5 Years
 dat2 <- data.frame(beta = clean_data$Average.Unlevered.Beta,
                    growth = clean_data$Expected.Growth.Next.5.Years)
 ggplot(dat2, aes(x = beta, y = growth)) +
     geom_bar(position = "identity", stat = "identity") + 
-    ggtitle("Beta vs Expected Growth Rate") +
-    theme_classic()
-```    
+    ggtitle("Beta vs Expected Growth Rate") + theme_classic()
+```
 
-Industries with betas of around 1 have highter expected growth.
+We see that industries with betas of slightly below 1 have higher expected growth. We then inspect the regression and scatterplot of beta to growth.
 
---------------- Michelle ----------------
-```{r, eval=TRUE, tidy=TRUE}
+```{r, eval=TRUE}
+# Graph the scatterplot of unlevered beta's impact on expected growth
+# when accounting for their regression
+reg1 <- lm(Expected.Growth.Next.5.Years ~ Average.Unlevered.Beta,
+               data = clean_data)
+ggplot(clean_data, aes(x = Average.Unlevered.Beta,
+                       y = Expected.Growth.Next.5.Years)) +
+    geom_point() + xlab("Average Unlevered Beta") +
+    ylab("Expected Growth (%)") + theme_classic() +
+    geom_abline(aes(slope = unname(coef(reg1)["Average.Unlevered.Beta"]),
+                    intercept = unname(coef(reg1)["(Intercept)"])),
+                color = rgb(223, 84, 84, maxColorValue = 255)) +
+    ggtitle("Average Unlevered Beta's Impact on Expected Growth")
+```
+
+The summary of the regression, shows that regressing unlevered beta on growth does not provide a good linear relationship between the two variables, as the coefficient does not have linear statistical significance. This is backed by the scatterplot; visually, the correlation between the two variables isn't strong. However, there are some outliers where growth is negative and beta is really low. We then create a linear regression after removing the outliers.
+
+```{r, eval=TRUE}
+# Make a scatter plot and regression of beta to growth accounting
+# for outliers
+sorted_beta <- sort(clean_data$Average.Unlevered.Beta,
+                    index.return = TRUE)[[2]]
+sort_beta <- sort(clean_data$Average.Unlevered.Beta)
+sorted_growth1 <- clean_data$Expected.Growth.Next.5.Years[sorted_beta]
+sorted_beta_growth <- data.frame(beta = sort_beta, growth = sorted_growth1)
+dat3 <- subset(sorted_beta_growth, sorted_growth1 > 0)
+plot(dat3$growth, dat3$beta,
+     col = rgb(100, 100, 100, 150, maxColorValue = 255), pch = 16,
+     bg = rgb(200, 200, 200, maxColorValue = 255),
+     xlab = "growth", ylab = "beta", main = "Beta vs Growth")
+fit_growth_beta <- lm(beta ~ growth, data = dat3)
+abline(fit_growth_beta, col = rgb(100, 100, 100, maxColorValue = 255))
+```
+
+There is positive correlation between beta and growth. This makes sense because growing industries are probably taking more risks and therefore are more sensitive to changes in the market, whereas mature industries would not be as sensitive to market fluctuations.
+
+We also further explore the relationship between current PE and expected growth through multiple methods.
+
+```{r, eval=TRUE}
 # Density curve of Current PE and of Expected Growth in the Next 5 Years
 plot(density(clean_data$Current.PE), main = "Density Plot of Current PE")
 plot(density(clean_data$Expected.Growth.Next.5.Years),
@@ -277,98 +286,95 @@ plot(density(clean_data$Expected.Growth.Next.5.Years),
 plot(clean_data$Current.PE, clean_data$Expected.Growth.Next.5.Years,
      col = rgb(50, 200, 200, 100, maxColorValue = 255), pch = 16,
      bg = rgb(200, 200, 200, maxColorValue = 255),
-     main = "Bar Plot of Forward PE Ratio")
+     main = "Scatterplot of Forward PE Ratio")
 
 # Make a linear regression of Current PE to Expected Growth in the Next 5 Years
 fit1 <- lm(Expected.Growth.Next.5.Years ~ Current.PE, data = clean_data)
 abline(fit1, col = rgb(50, 200, 200, maxColorValue = 255))
-summary(fit1)
 
 # Remove outliers and find the linear regression of Current PE to Expected
 # Growth in the Next 5 Years
-sorted_pe <- unlist(sort(clean_data$Current.PE,
-                         decreasing = TRUE))
-indices <- unlist(sort(clean_data$Current.PE,
-                       decreasing = TRUE,
-                       index.return = TRUE)[[2]])
-sorted_growth <- clean_data$Expected.Growth.Next.5.Years[indices]
-sorted_pe_growth <- data.frame(pe = sorted_pe, growth = sorted_growth)
-dat3 <- subset(sorted_pe_growth, sorted_pe < 300)
-plot(dat3$pe, dat3$growth, main = "Current PE Ratio vs. Expected Growth",
+sorted_pe <- sort(clean_data$Current.PE, decreasing = TRUE,
+                index.return = TRUE)[[2]]
+sort_pe <- sort(clean_data$Current.PE, decreasing = TRUE)
+sorted_growth2 <- clean_data$Expected.Growth.Next.5.Years[sorted_pe]
+sorted_pe_growth <- data.frame(pe = sort_pe, growth = sorted_growth2)
+dat4 <- subset(sorted_pe_growth, sort_pe < 300)
+plot(dat4$pe, dat4$growth, main = "Current PE Ratio vs. Expected Growth",
      xlab = "Current PE ratio", ylab = "Expected growth (next 5 years)",
      col = rgb(200, 50, 200, 100, maxColorValue = 255), pch = 16)
-fit2 <- lm(growth ~ pe, data = dat3)
+fit2 <- lm(growth ~ pe, data = dat4)
 abline(fit2, col = rgb(200, 50, 200, maxColorValue = 255))
-summary(fit2)
+```
 
+Simple methods, such as density curves, scatterplots, and regressions reveal that there is not much initial correlation between current PE and expected growth, so we account for average unlevered beta.
+
+```{r, eval=TRUE}
 # Account for beta when sorting PE ratios and growth by taking the PE ratios
 # and growths of industries with lower beta
-sorted_beta <- unlist(sort(clean_data$Average.Unlevered.Beta,
-                          index.return = TRUE)[[2]])
 beta_pe <- clean_data$Current.PE[sorted_beta]
 beta_growth <- clean_data$Expected.Growth.Next.5.Years[sorted_beta]
 end <- length(beta_pe)
 cutoff <- round(end/2)
 beta1 <- data.frame(pe = beta_pe[1:cutoff], growth = beta_growth[1:cutoff])
-plot(beta1$pe, beta1$growth, main = paste("Current PE Ratio vs. Expected Growth",
-                                          "For Industries with Lower Beta"),
+plot(beta1$pe, beta1$growth,
+     main = paste("Current PE Ratio vs. Expected Growth",
+                  "For Industries with Lower Beta"),
      xlab = "Current PE ratio", ylab = "Expected growth (next 5 years)",
      col = rgb(50, 50, 200, 100, maxColorValue = 255), pch = 16)
 fit3 <- lm(growth ~ pe, data = beta1)
 abline(fit3, col = rgb(50, 50, 200, maxColorValue = 255))
-summary(fit3)
-
-# Industries with lower beta
-print("Industries with lower beta:")
-print(clean_data$Industry[sorted_beta][1:cutoff])
 
 # Account for beta when sorting PE ratios and growth by taking the PE ratios
 # and growths of industries with higher beta
 beta2 <- data.frame(pe = beta_pe[(cutoff+1):end],
                     growth = beta_growth[(cutoff+1):end])
-plot(beta2$pe, beta2$growth, main = paste("Current PE Ratio vs. Expected Growth",
+plot(beta2$pe, beta2$growth,
+     main = paste("Current PE Ratio vs. Expected Growth",
                                           "For Industries with Higher Beta"),
      xlab = "Current PE ratio", ylab = "Expected growth (next 5 years)",
      col = rgb(200, 50, 50, 100, maxColorValue = 255), pch = 16)
 fit4 <- lm(growth ~ pe, data = beta2)
 abline(fit4, col = rgb(200, 50, 50, maxColorValue = 255))
-summary(fit4)
+```
 
-# Industries with higher beta
-print("Industries with higher beta:")
-print(clean_data$Industry[sorted_beta][(cutoff+1):end])
+We see that industries with lower beta (risk) have a positive correlation between current PE and expected growth, while industries with higher beta have a slight negative correlation between current PE and growth. This makes sense, because established companies that have higher PE ratios are most likely those that are successful and will continue to grow in the next 5 years while companies that are just starting up will vary in terms of growth regardless of their current PE ratio.
 
+To extract more information from current PE to growth, we made line graphs and bar plots.
+
+```{r, eval=TRUE}
 # Graph Current PE to Expected Growth in the Next 5 Years
 ggplot(data = clean_data, aes(x = Current.PE,
                               y = Expected.Growth.Next.5.Years)) +
     geom_line(color = "#548edf") + xlab("Current PE") +
     ylab("Expected Growth in the Next 5 Years") +
-    ggtitle("Plot of Current PE to Expected Growth") +
-    theme_classic()
+    ggtitle("Plot of Current PE to Expected Growth") + theme_classic()
 
 # Make a histogram of Current PE to Expected Growth for industries with
-# growth, g, fulfilling g < 300
-ggplot(dat3, aes(x = pe, y = growth)) + geom_line(color = "#ebcefb") +
-    geom_bar(position = "identity", stat = "identity", color = "#000000") +
-    ggtitle("Beta vs Expected Growth Rate") +
-    theme_classic()
-
-# Make a histogram of Current PE to Expected Growth for industries with
-# growth, g, fulfilling 100 <= g < 200
-dat4 <- subset(sorted_pe_growth, sorted_pe >= 100 & sorted_pe < 200)
+# pe, p, fulfilling p < 300
 ggplot(dat4, aes(x = pe, y = growth)) + geom_line(color = "#ebcefb") +
     geom_bar(position = "identity", stat = "identity", color = "#000000") +
-    ggtitle("Beta vs Expected Growth Rate") +
-    theme_classic()
+    ggtitle("Beta vs Expected Growth Rate") + theme_classic()
 
-# Make a histogram of Current PE to Expected Growth for industries
-# with growth, g, fulfilling g < 100
-dat5 <- subset(sorted_pe_growth, sorted_pe < 100)
+# Make a histogram of Current PE to Expected Growth for industries with
+# pe, p, fulfilling 100 <= p < 200
+dat5 <- subset(sorted_pe_growth, pe >= 100 & pe < 300)
 ggplot(dat5, aes(x = pe, y = growth)) + geom_line(color = "#ebcefb") +
+    geom_bar(position = "identity", stat = "identity", color = "#000000") +
+    ggtitle("Beta vs Expected Growth Rate") + theme_classic()
+
+# Make a histogram of Current PE to Expected Growth for industries with
+# pe, p, fulfilling p < 100
+dat6 <- subset(sorted_pe_growth, pe < 100)
+ggplot(dat6, aes(x = pe, y = growth)) + geom_line(color = "#ebcefb") +
     geom_bar(position = "identity", stat = "identity",
              color = "#000000") +
     ggtitle("Beta vs Expected Growth Rate") + theme_classic()
+```
 
+We find that most industries have current PEs centered around 0 to 50, and that those with the highest growth tend to have PEs of 50 to 100. We finally make a bubble plot of current PE to expected growth, with circles corresponding to the size of the industry.
+
+```{r, eval=TRUE}
 # Make bubble plots of Current PE and Expected Growth in the
 # Next 5 Years for different industries
 symbols(industries_only$Current.PE,
@@ -390,99 +396,83 @@ industry_growth <- industries_only$
 industry_num_firms <- industries_only$Number.of.Firms[industry_indices]
 industry_pe_growth <- data.frame(pe = industry_pe, growth = industry_growth,
                                  num_firms = industry_num_firms)
-dat6 <- subset(industry_pe_growth, industry_pe < 150)
-symbols(dat6$pe, dat6$growth, circles = dat6$num_firms,
+dat7 <- subset(industry_pe_growth, industry_pe < 150)
+symbols(dat7$pe, dat7$growth, circles = dat7$num_firms,
         inches=0.35, fg="white", bg="#facccc8d",
         xlab="Current PE", ylab="Expected Growth in 5 Years",
         main = paste("Current PE Less Than 150 vs",
                      "Expected Growth in the Next 5 Years"))
-text(dat6$pe, dat6$growth, labels = dat6$num_firms, cex = 0.3)
+text(dat7$pe, dat7$growth, labels = dat7$num_firms, cex = 0.3)
 ```
 
-------------- Anais -------------------
-Analysis of relationship between Average Unlevered Beta and Expected Growth for the next 5 years:
+We see that there are several outliers for current PE, but when we discount for those, we find that larger industries have PEs of 50 to 100 while smaller industries tend to have smaller values.
 
-To investigrate the relationship between beta and expected growth over the next 5 years, the data required further cleaning. In order to run a regression between the two variables, the "%" signs in the values of the 5 year expected growth column were removed and the values were converted to numeric values. Using these values, a clean_data column "exp_growth" was aded to the dataframe "clean_data". 
+Further relationships were investigated to control for other variables that may have caused a deviation in the coefficient for the regression of unlevered beta and expected growth. One of these variables is the PE ratio.
 
-```{r, tidy=TRUE}
-# Graph the scatterplot of Unlevered Beta's impact on Expected Growth
-# when accounting for their regression
-reg1 <- lm(Expected.Growth.Next.5.Years ~ Average.Unlevered.Beta,
-               data = clean_data)
-summary(reg1)
-ggplot(clean_data, aes(x = Average.Unlevered.Beta,
-                       y = Expected.Growth.Next.5.Years)) +
-    geom_point() + xlab("Average Unlevered Beta") +
-    ylab("Expected Growth (%)") +
-    geom_abline(aes(slope = unname(coef(reg1)["Average.Unlevered.Beta"]),
-                    intercept = unname(coef(reg1)["(Intercept)"])),
-                color = rgb(223, 84, 84, maxColorValue = 255)) +
-    ggtitle("Average Unlevered Beta's Impact on Expected Growth") +
-    theme_classic()
-```
-
-The regression returns the estimate for the coefficient of unlevered beta as 2.804, while the coefficient of the interecpt is 13.847. However, the summary of the regression, shows that regressing unlevered beta on exp_growth does not provide a good linear relationship between the two variables as the coefficient does not have linear statistical significance. 
-
-The scatterplot of unlevered beta and expected growth further demonstrates the lack of a linear relationship between the two variables. We can see visually that the correlation between the two variables isn't strong. 
-
-Further relationships were investigated as other variables that might be causing a deviation in the coefficient for the regression of unlevered beta and expected growth needed to be controlled for. 
-
-One of these variables is the Price Earnings (P/E) ratio:
-
-```{r, tidy=TRUE}
+```{r, eval=TRUE}
 # Find the multivariate regression of expected growth to unlevered beta
 # and current PE ratio
 reg2 <- lm(Expected.Growth.Next.5.Years ~ Average.Unlevered.Beta +
                Current.PE, data = clean_data)
-summary(reg2)
 
-# Graph the scatterplot of unlevered beta's impact on expected growth
-ggplot(clean_data, aes(x = Current.PE,
-                       y = Expected.Growth.Next.5.Years)) +
+# Graph the scatterplot of current PE ratio versus expected growth
+ggplot(clean_data, aes(x = Current.PE, y = Expected.Growth.Next.5.Years)) +
     geom_point() + xlab("Current PE Ratio") + ylab("Expected Growth (%)") +
-    ggtitle("Scatterplot of PE Ratio vs Expected Growth") +
-    theme_classic()
-```
-
-The summary of this regression also demonstrates that there isn't a significant linear relationship between these variables as the only statistically significant coefficient is that of the intercept. 
-
-Again, having a look at the relationship visually through the ggplot, we see that there isn't a strong linear relationship and there are outliers present. (#####ASK PETER######)
-
-These were interesting findings, which led to the investigration of other related variables, such as the PEG Ratio. The Price/Earnings to Growth (PEG) is a stock's price-to-earnings ratio divided by the growth rate of its earnings for a specified time period. The PEG ratio is used to determine a stock's value while taking the company's earnings growth into account, and is considered to provide a more complete picture than the P/E ratio. 
-
-This next regression checks for a linear relationship between PEG ratio and exp_growth, meanwhile retaining PE ratio and unlevered beta in the regression to eliminate any possible  effects of confounding factors. 
-
-```{r, tidy=TRUE}
-# Graph the scatterplot of PEG ratio's impact on expected growth after
-# finding the multivariate regression of expected growth in the next 5
-# years to average unlevered beta, the current PE ratio, and the PEG Ratio.
-# The graph only concerns the regression of expected growth to beta.
-reg3 <- lm(Expected.Growth.Next.5.Years ~ Average.Unlevered.Beta +
-               Current.PE + PEG.Ratio, data = clean_data)
-summary(reg3)
-ggplot(clean_data, aes(x = Current.PE,
-                       y = Expected.Growth.Next.5.Years)) +
-    geom_point() + xlab("Current PE Ratio") + ylab("Expected Growth (%)") +
-    geom_abline(aes(slope = unname(coef(reg3)["Average.Unlevered.Beta"]),
-                    intercept = unname(coef(reg3)["(Intercept)"])),
+    geom_abline(aes(slope = unname(coef(reg2)["Current.PE"]),
+                    intercept = unname(coef(reg2)["(Intercept)"])),
                 color = rgb(223, 84, 84, maxColorValue = 255)) +
-    ggtitle("PEG Ratio's Impact on Expected Growth") +
-    theme_classic()
+    ggtitle("Current PE Ratio vs Expected Growth") + theme_classic()
 ```
 
-The summary of regressing PEG ratio against the expected growth, shows that there is statistical significance to the coefficients. The linear regression returned a coefficient estimate of approximately -1.376 for the PEG ratio and 16.472 for the intercept. The summary shows that the PEG ratio estimate has statistical significance at the ????????? level. (####ASK PETER#####)
+Again, this regression demonstrates that there is not a significant linear relationship between these variables, as the only statistically significant coefficient is that of the intercept. Taking the log of the independent variable yields a better looking graph with the absence of an outlier. We also manually remove the outlier.
 
-Having a look at the relationship through a graphical respresentation, the function abline was used to draw the best fit regression line. 
+```{r, eval=TRUE}
+# Graph the scatterplot of the log of the current PE ratio to the growth rate
+# with the corresponding multivariate regression
+log_reg2 <- lm(Expected.Growth.Next.5.Years ~ log(Current.PE) +
+                   Average.Unlevered.Beta, data = clean_data)
+ggplot(clean_data, aes(x = log(Current.PE),
+                       y = Expected.Growth.Next.5.Years)) +
+    geom_point() + ggtitle("Scatterplot of PE Ratio vs Expected Growth") +
+    xlab("Current PE Ratio (log)") + ylab("Expected Growth (%)") +
+    geom_abline(aes(slope = unname(coef(log_reg2)["log(Current.PE)"]),
+                    intercept = unname(coef(log_reg2)["(Intercept)"])),
+                color = rgb(223, 84, 84, maxColorValue = 255)) +
+    theme_classic()
 
-```{r, tidy=TRUE}
+# Remove the outliers of expected growth and current PE from the graph
+indices_no_outliers <- sort(clean_data$Expected.Growth.Next.5.Years,
+                            index.return = TRUE)[[2]]
+growth_no_outliers <- unlist(sort(clean_data$Expected.Growth.Next.5.Years))
+pe_no_outliers <- clean_data$Current.PE[indices_no_outliers]
+dat8 <- data.frame(growth = growth_no_outliers, pe = pe_no_outliers)
+dat8 <- subset(dat8, growth_no_outliers > 6.32 & pe_no_outliers < 300)
+
+# Make a multivariate regression of growth to PE when there are no outliers
+reg2_no_outliers <- lm(growth ~ pe , data = dat8)
+
+# Plot the scatterplot and regression of current PE to expected growth
+ggplot(dat8, aes(x = pe, y = growth)) + theme_classic() +
+    geom_point() + xlab("Current PE Ratio") + ylab("Expected Growth (%)") +
+    geom_abline(aes(slope = unname(coef(reg2_no_outliers)["pe"]),
+                    intercept = unname(coef(reg2_no_outliers)["(Intercept)"])),
+                color = rgb(223, 84, 84, maxColorValue = 255)) +
+    ggtitle("Current PE Ratio's Impact on Expected Growth")
+```
+
+We found that when we account for the outliers, there's a slight positive multivariate correlation between expected growth, beta, and current PE. Continuing with the trend, we further investigated another related variables, the PEG Ratio. Our next regression checks for a linear relationship between PEG and growth, meanwhile retaining PE and unlevered beta in the regression to eliminate possible effects of confounding factors. We also included the regression of expected growth to PEG when discounting the effects of other variables. We additionally removed the outliers as we saw fit.
+
+```{r, eval=TRUE}
 # Graph the scatterplot of PEG ratio's impact on expected growth and the
 # regression line of expected growth to PEG ratio and the regression line
-# of the multivariate regression found in reg3
+# of the multivariate regression of expected growth in the next 5
+# years to average unlevered beta, the current PE ratio, and the PEG Ratio.
+reg3 <- lm(Expected.Growth.Next.5.Years ~ Average.Unlevered.Beta +
+               Current.PE + PEG.Ratio, data = clean_data)
 reg4 <- lm(Expected.Growth.Next.5.Years ~ PEG.Ratio, data = clean_data)
-summary(reg4)
-ggplot(clean_data, aes(x = PEG.Ratio,
-                       y = Expected.Growth.Next.5.Years)) +
-    geom_point() + xlab("PEG Ratio") + ylab("Expected Growth (%)") +
+ggplot(clean_data, aes(x = PEG.Ratio, y = Expected.Growth.Next.5.Years)) +
+    geom_point(color = rgb(223, 84, 84, 100, maxColorValue = 255)) +
+    xlab("PEG Ratio") + ylab("Expected Growth (%)") +
     geom_abline(aes(slope = unname(coef(reg3)["PEG.Ratio"]),
                     intercept = unname(coef(reg3)["(Intercept)"])),
                 color = rgb(84, 233, 233, maxColorValue = 255)) +
@@ -490,125 +480,97 @@ ggplot(clean_data, aes(x = PEG.Ratio,
                     intercept = unname(coef(reg4)["(Intercept)"])),
                 color = rgb(223, 84, 84, maxColorValue = 255)) +
     ggtitle("PEG Ratio's Impact on Expected Growth") +
-    theme_classic()
+    coord_cartesian(ylim=c(0,40)) + theme_classic()
+
+# Graph the scatterplot and regression of PEG ratio and expected growth
+# accounting for outliers
+peg_no_outliers <- clean_data$PEG.Ratio[indices_no_outliers]
+dat9 <- data.frame(growth = growth_no_outliers, peg = peg_no_outliers)
+dat9 <- subset(dat9, growth > 6.32 & peg < 2.5 & !is.na(peg))
+reg4_no_outliers <- lm(growth ~ peg, data = dat9)
+ggplot(dat9, aes(x = peg, y = growth)) + xlab("PEG Ratio") +
+    ylab("Expected Growth (%)") + coord_cartesian(ylim=c(0,40)) +
+    geom_point(color = rgb(223, 84, 84, 100, maxColorValue = 255)) +
+    geom_abline(aes(slope = unname(coef(reg4_no_outliers)["peg"]),
+                    intercept = unname(coef(reg4_no_outliers)["(Intercept)"])),
+                color = rgb(223, 84, 84, maxColorValue = 255)) +
+    ggtitle("PEG Ratio's Impact on Expected Growth") + theme_classic()
 ```
 
-The negative relationship between PEG Ratio and Expected Growth makes sense as the lower the PEG Ratio the higher the growth will be. PEG Ratio is used for stock valuation and is defined as P/E Ratio / Growth. For a good stock you would want a small P/E Ratio and a high denominator as Growth, resulting in a small PEG Ratio. 
+We find a statistical significance to the above coefficients, but the multivariate regression does not make a dramatic impact on best-fit line when compared to the normal regression. In the graph, the green line represents the multivariate regression while the red line represents the simple regression. Both regressions returned a negative slope for PEG and growth, meaning the industries had a relatively stable PE throughout.
 
-library(scatterplot3d)
-scatterplot3d(x = clean_data$Expected.growth.in.next.5.years, clean_data$PEG.Ratio, z = clean_data$Average.Unlevered.Beta, angle = 280, scale.y = .3, xlab = "Expected Growth in Next 5 Years", ylab = "PE Ratio", zlab = "Beta")
+We then visually examined a three-dimensional scatterplot of expected growth, PEG ratio, and average unlevered beta from multiple angles. This allows us to easily visualize the correlations between all of the variables.
 
-Although there is a wide range of industries that have various values of expected growth (thus showing no correlation along with beta and PE ratio), we are still able to see the effects of beta on PE Ratio. As beta increases, PE ratio decreases.
-
--------------------- Christian -----------------------
-Correlation between Trailing PE and Forward PE
 ```{r, eval=TRUE}
-
-# Impact on Trailing PE on Forward PE
-plot(clean_data$Trailing.PE, clean_data$Forward.PE,
-     xlab = "Trailing PE", ylab = "Forward PE",
-     main = "Correlation Between Trailing PE and Forward PE",
-     col = '#4876FF')
-
-# Impact on Forward PE on Trailing PE
-plot(clean_data$Forward.PE, clean_data$Trailing.PE,
-     xlab = "Forward PE", ylab = "Trailing PE",
-     main = "Correlation Between Trailing PE and Forward PE",
-     col = '#2E8B57')
-
-```
-
-Analysis: I plotted the data for trailing price earnings and forward price earnings on a scatterplot in order to see the impact of trailing price earnings on forward price earnings, and the impact of forward price earnings on trailing price earnings. Based on the graph that is depicted by the code above, there is a positive correlation between the trailing price earnings and the forward price earnings. This means that the forward price earnings increases as the trailing price earnings increases, and vise versa (though the correlation when the variables are swtiched is not that strong, meaning that the positive impact on the forward price earnings on the trailing price earnings is not as strong as the positive impact that the traling price earnings has on forward price earnings).
-
-
-Correlation between Beta and PE Ratio
-```{r, eval=TRUE}
-
-# Impact of Beta on PE Ratio
-plot(clean_data$Average.Unlevered.Beta, clean_data$PEG.Ratio,
-     xlab = "Average Unlevered Beta", ylab = "PE Ratio",
-     main = "Correlation Between Beta and PE Ratio",
-     col = "#FF0000")
-
-# Impact of PE Ratio on Beta
-plot(clean_data$PEG.Ratio, clean_data$Average.Unlevered.Beta,
-     xlab = "PE Ratio", ylab = "Average Unlevered Beta",
-     main = "Correlation Between PE Ratio and Beta",
-     col = '#8B0000')
-
-```
-
-Analysis: I plotted the data for the average unlevered beta and price earnings (PE) ratio on a scatterplot in order to see the impact of average unlevered beta on the price earnings ratio, and the impact of the price earnings ratio on the average unlevered beta. Based on the graph that is depicted by the code above, there is almost no correlation between the average unlevered beta and the price earnings ratio. This means that the average unlevered beta has no effect on the price earnings ratio in most instances. In contrast, there is a positive correlation between the price earnings ratio and the average unlevered beta. This means that the PE ratio has a positive effect of the average unlevered beta.
-
-
-Correlation Between Trailing PE and the Expected Growth in the Next 5 Years
-```{r, eval=TRUE}
-
-# Impact of Trailing PE on Expected Growth in the Next 5 Years
-plot(clean_data$Trailing.PE, clean_data$Expected.Growth.Next.5.Years,
-     xlab = "Trailing PE", ylab = "Expected Growth in the Next 5 Years",
-     main = paste("Correlation Between Traling PE and Expected",
-                  "Growth in the Next 5 Years"), col = '#551A8B')
-
-# Impact of Expected Growth in the Next 5 Years on Trailing PE
-plot(clean_data$Expected.Growth.Next.5.Years, clean_data$Trailing.PE,
-     xlab = "Expected Growth in the Next 5 Years", ylab = "Trailing PE",
-     main = paste("Correlation Between Expected Growth in the",
-                  "Next 5 Years and Trailing PE"), col = '#27408B')
-
-```
-
-Analysis: I plotted the data for trailing price earnings and the expected growth in the next five years on a scatterplot in order to see the impact of trailing price earnings on the expected growth in the next five years, and the impact of the expected growth in the next five years on trailing price earnings. Based on the graphs above, there are no correlations to be found between trailing PE and the expected growth in the next five years. In other words, the trailing PE has no effect on the expected growth in the next five years, and vise versa.
-
-
-Scatterplot from Multiple Angles: Correlations between Expected Growth, PE Raio, and Beta
-```{r, eval=TRUE}
-# Multiple angles
+# Make 3D scatterplot of Expected Growth in the Next 5 Years, PEG Ratio,
+# and Average Unlevered Beta, then examine the graph from multiple angles
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
-              clean_data$PEG.Ratio, z = clean_data$Average.Unlevered.Beta,
-              angle = 30, scale.y = .3,
+              y = clean_data$PEG.Ratio,
+              z = clean_data$Average.Unlevered.Beta,
+              angle = 30, scale.y = .3, pch = 16,
               xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta")
-
-# Look at PE Ratio here:
-scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
-              clean_data$PEG.Ratio, z = clean_data$Average.Unlevered.Beta,
-              angle = 280, scale.y = .3,
-              xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta")
+              ylab = "PEG Ratio", zlab = "Beta",
+              color = rgb(83, 223, 223, 100, maxColorValue = 255),
+              main = "3D Scatterplot of Expected Growth, PEG Ratio, and Beta")
 
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
               y = clean_data$PEG.Ratio,
               z = clean_data$Average.Unlevered.Beta,
-              angle = 200, scale.y = .3,
+              angle = 100, scale.y = .3, pch = 16,
               xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta")
-scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
-              y= clean_data$PEG.Ratio,
-              z = clean_data$Average.Unlevered.Beta,
-              angle = 230, scale.y = .3,
-              xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta")
+              ylab = "PEG Ratio", zlab = "Beta",
+              color = rgb(83, 223, 223, 100, maxColorValue = 255),
+              main = "3D Scatterplot of Expected Growth, PEG Ratio, and Beta")
+
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
               y = clean_data$PEG.Ratio,
               z = clean_data$Average.Unlevered.Beta,
-              angle = -400, scale.y = .3,
+              angle = 300, scale.y = .3, pch = 16,
               xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta")
+              ylab = "PEG Ratio", zlab = "Beta",
+              color = rgb(83, 223, 223, 100, maxColorValue = 255),
+              main = "3D Scatterplot of Expected Growth, PEG Ratio, and Beta")
+```
+
+From our scatterplot, we see that low PEG ratios were associated with high levels of beta and expected growth. That is, expected growth and beta both have a negative impact on PEG ratios, since PEG ratio decreases as beta and expected growth increases. Conversely, higher PEG ratios are associated with lower levels of expected growth and beta and increases as expected growth and beta decreases.
+
+We then examined the scatterplot of expected growth, current PE ratio, and average unlevered beta from multiple angles.
+
+```{r, eval=TRUE}
+# Make 3D scatterplot of Expected Growth in the Next 5 Years, Current PE,
+# and Average Unlevered Beta, then examine the graph from multiple angles
 scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
-              y= clean_data$PEG.Ratio,
-              z = clean_data$Average.Unlevered.Beta,
-              angle = 200, scale.y = .3,
+              y = clean_data$Current.PE, z = clean_data$Average.Unlevered.Beta,
+              angle = 30, scale.y = .3, pch = 16,
               xlab = "Expected Growth in Next 5 Years",
-              ylab = "PE Ratio", zlab = "Beta")
+              ylab = "Current PE Ratio", zlab = "Beta",
+              color = rgb(83, 223, 223, 100, maxColorValue = 255),
+              main = "3D Scatterplot of Expected Growth, PE Ratio, and Beta")
+              
+scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
+              y = clean_data$Current.PE, z = clean_data$Average.Unlevered.Beta,
+              angle = 100, scale.y = .3, pch = 16,
+              xlab = "Expected Growth in Next 5 Years",
+              ylab = "Current PE Ratio", zlab = "Beta",
+              color = rgb(83, 223, 223, 100, maxColorValue = 255),
+              main = "3D Scatterplot of Expected Growth, PE Ratio, and Beta")
+
+scatterplot3d(x = clean_data$Expected.Growth.Next.5.Years,
+              y = clean_data$Current.PE, z = clean_data$Average.Unlevered.Beta,
+              angle = 300, scale.y = .3, pch = 16,
+              xlab = "Expected Growth in Next 5 Years",
+              ylab = "Current PE Ratio", zlab = "Beta",
+              color = rgb(83, 223, 223, 100, maxColorValue = 255),
+              main = "3D Scatterplot of Expected Growth, PE Ratio, and Beta")
 ```
 
-Analysis: I used a scatterplot in order to see the correlations between all of the variables when they are all present within the same graph. As a result of including all of the variables in one graph rather than having them in separate regressions, I am able to produce more accurate result when analyzing the impacts of growth and beta on the price earnings ratios. Although there is a wide range of industries that have various values of expected growth (thus showing no correlation along with beta and the price earnings ratio), we are still able to see the effects of beta on the price earnings ratio. There is an inverse correlation between the price earnings ratio and beta, since the price earnings ratios decreases when beta increases. In other words, beta has a negative impact on the price earnings ratios.
+We found that low current PE ratios were associated with high levels of beta and expected growth. Expected growth and beta both have a negative impact on current PE, while current PE ratio increases as expected growth and beta decreases.
 
-#Findings
-```{r}
-```
+#Findings & Conclusion
 
-#Conclusion
+Through our analysis, we tried to answer our hypothesis through our guiding questions, which we answer below.
 
-write.
+- We found from our analysis that PE is negatively correlated with beta. That is, as beta increases, PE decreases. Thus, there is a negative correlation between beta and the payout ratio.
+- Industries with higher beta also have higher growth rates, as we saw in our findings. Thus, industries such as technology -- software and online retail -- have higher growth but are less stable than industries such as finance, which also have a lower beta.
+
+Our findings state that industries with higher beta also has higher growth. However, because higher beta is negatively correlated with payout ratio, then industries with higher beta also has a low PE. Thus, for the technology industry with a higher beta, it also has high growth, which also leads the industry to have a low PE value.
