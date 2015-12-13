@@ -19,9 +19,9 @@ library(stringr)
 
 # Read data files
 clean_data <- read.csv("clean_data/clean_data.csv", header = TRUE,
-                       stringsAsFactors = FALSE)
+                       row.names = 1, stringsAsFactors = FALSE)
 industries_only <- read.csv("clean_data/industries_only.csv", header = TRUE,
-                            stringsAsFactors = FALSE)
+                            row.names = 1, stringsAsFactors = FALSE)
 
 # Scatter plot of Current PE to Forward PE
 ggplot(clean_data, aes(x = Current.PE, y = Forward.PE)) +

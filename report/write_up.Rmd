@@ -148,9 +148,9 @@ setwd("~/Documents/UC\ Berkeley\ 2015-2016/Statistics\ 133/projects/final/")
 
 # Read data files
 clean_data <- read.csv("clean_data/clean_data.csv", header = TRUE,
-                       stringsAsFactors = FALSE)
+                       row.names = 1, stringsAsFactors = FALSE)
 industries_only <- read.csv("clean_data/industries_only.csv", header = TRUE,
-                            stringsAsFactors = FALSE)
+                            row.names = 1, stringsAsFactors = FALSE)
 
 # A look at clean_data
 str(clean_data)
