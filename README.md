@@ -19,8 +19,9 @@ This project contains the following files:
 - `skeleton.R`: creates all directories in the project
 - `clean_data/clean_data.csv`: contains the cleaned data with the row "Total Market"
 - `clean_data/industries_only.csv`: contains the cleaned data without the row "Total Market"
-- `code/preprocessing.R`: contains the code for preprocessing all data
 - `code/analysis.R`: contains the code for analyzing our data
+- `code/functions.R`: contains the code for functions we wrote
+- `code/preprocessing.R`: contains the code for preprocessing all data
 - `final.Rproj`: contains the RStudio Project for this project
 - `images/*.pdf`: pdf version of images generated in `code/analysis.R`
 - `images/*.png`: png version of images generated in `code/analysis.R`

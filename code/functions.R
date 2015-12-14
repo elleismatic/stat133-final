@@ -1,18 +1,3 @@
----
-title: "Functions Written"
-author: "Ruomeng (Michelle) Yang"
-date: "December 14, 2015"
-output: pdf_document
----
-
-#Functions & Their Uses
-
-Here, we set up the packages, dependencies, and datasets that we need. We will also need to retrieve and read our clean dataset before we begin. See `code/functions.R` for only the code.
-
-```{r, eval=TRUE}
-# Set working directory back for knitting
-setwd("/Users/Michelle/Documents/UC Berkeley 2015-2016/Statistics 133/projects/final/report")
-
 # Set up ggplot2
 library(ggplot2)
 
@@ -33,11 +18,7 @@ clean_data <- read.csv("clean_data/clean_data.csv", header = TRUE,
                        row.names = 1, stringsAsFactors = FALSE)
 industries_only <- read.csv("clean_data/industries_only.csv", header = TRUE,
                             row.names = 1, stringsAsFactors = FALSE)
-```
 
-For our project, one of our tasks was to analyze which industries were in the highest and lowest beta interval. To do so, we created a variable "beta_intervals" that contained a vector sequence of 5 elements from 0 to 1.5. We then created a function that took in a beta and placed the value within the created intervals. 
-
-```{r, eval=TRUE}
 # Analyze which industries are in the highest and lowest beta interval
 beta_intervals <- seq(from = 0, to = 1.5, by = 0.3)
 
@@ -57,11 +38,7 @@ interval_fun <- function(beta) {
 # beta_intervals
 beta_interval <- unlist(lapply(clean_data$Average.Unlevered.Beta,
                                FUN = interval_fun))
-```
 
-We also further applied this function to find the industries in the highest and the lowest beta intervals.
-
-```{r, eval=TRUE}
 # Return a vector of the industries that are in a specified beta
 # interval (or bin)
 # input: beta_num (numeric) - the specified beta interval or bin
@@ -73,11 +50,7 @@ beta_vector <- function(beta_num) {
 # Test cases
 beta_vector(5)
 beta_vector(1)
-```
 
-Furthermore, we also wanted to know the percentage of total industries with a PEG ratio under a certain amount, so we decided to create a function to calculate this percentage.
-
-```{r, eval=TRUE}
 # Return the percentage of total industries with a PEG ratio less than
 # a specified value
 # input: value (numeric) - a specified PEG ratio
@@ -94,11 +67,7 @@ peg_percent_indus(1.5)
 peg_percent_indus(1)
 peg_percent_indus(.5)
 peg_percent_indus(0)
-```
 
-The next function returns the industry names of the values that are specified number of standard deviations above or below the mean. The input of the fuction, num_sd, is restricted to returning values that are within 0 to 4 standard deviations from the mean to keep results statistically relevant for interpretation and meaningful insight. 
-
-```{r, eval=TRUE}
 # Return the industries that have higher magnitude of expected growth
 # than a specified standard deviation
 # input: num_sd (numeric) - a specified standard deviation
@@ -123,14 +92,8 @@ industry_growth_outliers <- function(num_sd) {
 # Test cases
 industry_growth_outliers(1)
 industry_growth_outliers(2.2)
+industry_growth_outliers(-0.83)
 
-# The below case is a test, which works, but must be omitted for knitting
-# industry_growth_outliers(-0.83)
-```
-
-We also did quite a bit of things with removing outliers, so we decided to generalize this some more as well.
-
-```{r, eval=TRUE}
 # Remove the outliers of two vectors and return the result as a data frame.
 # input: x (vector) - input to be sorted
 #        y (vector) - second input to be sorted
@@ -173,11 +136,7 @@ mean(clean_data$Average.Unlevered.Beta) +
 mean(clean_data$Average.Unlevered.Beta) -
     sd(clean_data$Average.Unlevered.Beta)
 sort(clean_data$Average.Unlevered.Beta)
-```
 
-We also wanted to generalize our graphs some more, so we made a function that both saves the graph in PNG and PDF format, if indicated, or else simply plots the graph.
-
-```{r, eval=FALSE}
 # Create a graph of a specified type and give users the option of 
 # saving the generated image in PNG and PDF format
 # input: type (func) - function for high-level graphics
@@ -220,4 +179,3 @@ graph(type = plot, dat3$growth, dat3$beta,
      bg = rgb(200, 200, 200, maxColorValue = 255), save = TRUE,
      main = "function_test_scatterplot_beta_vs_growth",
      xlab = "Expected growth (%)", ylab = "Average unlevered beta")
-```
