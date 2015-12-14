@@ -27,9 +27,11 @@ This project contains the following files:
 - `raw_data/pe_data.csv`: PE ratio data from a CSV file downloaded online
 - `raw_data/total_beta.csv`: beta data of different industries from a CSV file downloaded online
 - `report/extra_credit_presentation.pptx`: final PowerPoint for extra credit
+- `report/functions.Rmd`: an R markdown file that contains a summary of our functions
+- `report/functions.pdf`: a PDF version of our `report/functions.Rmd`
 - `report/write_up.Rmd`: an R markdown file that contains a synthesis of our write up and code
-- `report/write_up.pdf`: a PDF version of our 'write_up.Rmd'
-- `resources/`:
+- `report/write_up.pdf`: a PDF version of our 'report/write_up.Rmd'
+- `resources/inspirations.txt`: a plain text file of different sources that inspired the project
 
 ## Research Problem
 

@@ -1,0 +1,7 @@
+Articles:
+- "Realistic Statistical Modelling of Financial Data" by Tina Rydberg: http://www.nuff.ox.ac.uk/users/rydberg/realistic.pdf
+- "Multivariate Tests of the Zero-Beta CAPM" by Jay Shanken: http://www.sciencedirect.com/science/article/pii/0304405X85900029
+- "The Adjustment of Beta Forecasts" by Robert Klemosky & John Martin: http://www.jstor.org/stable/2326729
+
+Classes:
+- UC Berkeley UGBA 102 - Financial Accounting
